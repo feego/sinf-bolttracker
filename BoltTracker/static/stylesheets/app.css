@@ -1,0 +1,154 @@
+@font-face {
+    font-family: "Title Font";
+    src: url('../fonts/timeburner_regular.ttf') format("truetype");
+}
+
+.console {
+    background: #292f34;
+    color: white;
+    font-size: 1.0em;
+    text-align: center;
+}
+
+body > section > header {
+    text-shadow: 0 1px 1px rgba(0,20,40,0.5);
+    background: #1f3d63;
+    -webkit-box-shadow: inset 0 -1px #1f3d63, 0 1px 1px rgba(0,80,100,0.4);
+}
+
+body > section > header .title {
+    text-shadow: 0 1px 1px rgba(0,20,40,0.5);
+}
+
+body > section > header p {
+    font-size: 14px;
+    color: rgba(255,255,255,1);
+    letter-spacing: 0.1px;
+}
+
+body > section > footer {
+    height: 25px;
+    background: #1f3d63;
+    -webkit-box-shadow: inset 0 -1px #1f3d63, 0 -0px 1px rgba(0,50,70,1);
+}
+
+body > section > footer > p {
+    text-align: center;
+    margin: 0;
+    color: #7f9dC3;
+    text-shadow: 0 0 1px #4f6d93;
+    font-size: 13px;
+    letter-spacing: 0.1px;
+    font-style: oblique;
+    line-height: 25px; 
+}
+
+section header > nav:not(.on-right) a {
+    font-size: 14px;
+    text-shadow: 0 0.1em rgba(0,0,0,0.2);
+    color: rgba(0,50,70,0.9);
+}
+
+li {
+    padding-top: 128px !important;
+    padding-bottom: 128px !important;
+}
+
+#touchevents .list li:not(.anchor) {
+    padding: 64px 8px;
+}
+
+#scroll h1 {
+    line-height: 44px;
+    background: black;
+    color: white;
+    text-indent: 10px;
+}
+
+#scroll img {
+    min-width: 256px;
+    min-height: 128px;
+    background: #333;
+}
+#scroll .anchor img {
+    width: 100%;
+    margin-bottom: 4px;
+}
+#scroll .horizontal img {
+    height: 100%;
+    margin-right: 4px;
+}
+
+#splash > article {
+    background: #1f3d63;
+}
+
+#splash button {
+    background: #0f2d53;
+}
+
+#splash img {
+    margin-top: 10%;
+    margin-bottom: 50px;
+}
+
+#splash p {
+    margin-top: 0px;
+    text-align: center;
+    color: #7f9dC3;
+    text-shadow: 0 0 1px #4f6d93;
+    font-size: 13px;
+    letter-spacing: 0.1px;
+    font-style: oblique;
+    line-height: 25px; 
+}
+
+#splash h1 {
+    margin-top: 80px;
+    margin-bottom: 0px;
+    line-height: 100px;
+    font-size: 120px;
+    letter-spacing: 3px;
+    font-weight: lighter;
+    font-family: 'Title Font', Verdana, Tahoma;
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.2);
+}
+
+#splash h2 {
+    margin-top: 0;
+    margin-bottom: 100px;
+    color: #7f9dC3;
+    text-shadow: 0 0 1px #4f6d93;
+    font-size: 17px;
+    letter-spacing: 0.1px;
+    font-style: oblique;
+    line-height: 25px; 
+    position: relative;
+    left: -130px;
+}
+
+#splash #login {
+    height: 227px;
+    width: 800px;
+    margin: auto;
+}
+
+#splash .form {
+    margin-top: 0px;
+    height: 187px;
+    width: 350px;
+    float: left;
+    padding: 40px;
+
+}
+
+#splash .form.tracknumber {
+    margin-top: 20px;
+    padding-top: 20px;
+    width: 450px;
+    border-left: 1px solid rgba(11,41,79,0.4);
+}
+
+#splash .form.tracknumber fieldset {
+    border-radius: 2px;
+}
