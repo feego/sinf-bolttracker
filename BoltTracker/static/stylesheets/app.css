@@ -104,27 +104,35 @@ li {
 }
 
 #splash h1 {
-    margin-top: 80px;
+    margin-top: 100px;
     margin-bottom: 0px;
     line-height: 100px;
     font-size: 120px;
     letter-spacing: 3px;
-    font-weight: lighter;
     font-family: 'Title Font', Verdana, Tahoma;
-    text-shadow: 1px 1px 1px rgba(0,0,0,0.2);
+    text-shadow: 1px 2px 2px #0f2d53;
 }
 
 #splash h2 {
     margin-top: 0;
-    margin-bottom: 100px;
-    color: #7f9dC3;
-    text-shadow: 0 0 1px #4f6d93;
-    font-size: 17px;
+    margin-bottom: 90px;
+    color: #5f7dA3;
+    text-shadow: 0 1px #5f7dA3;
+    font-size: 18px;
     letter-spacing: 0.1px;
     font-style: oblique;
     line-height: 25px; 
     position: relative;
     left: -130px;
+}
+
+#splash h3 {
+    font-size: 19px;
+    margin-bottom: 10px; 
+    text-shadow: 0 1px 1px rgba(0,0,0,0.3);
+    position: relative;
+    left: -50px;
+    letter-spacing: 0.5px;
 }
 
 #splash #login {
