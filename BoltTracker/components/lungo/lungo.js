@@ -5,6 +5,50 @@
 // Var used to trigger Aside animation
 var draggingOtherElement = false;
 
+function onCloseEvent() {
+    var searchUrlSuffix = "?";
+
+    var orderRef        = $('#search-order-ref').val(),
+        status          = $('#search select option:selected').text(),
+        itemsCountFrom  = $('#item-count-from').val(),
+        itemsCountTo    = $('#item-count-to').val(),
+        progressFrom    = $('#range-from').val(),
+        progressTo      = $('#range-to').val(),
+        dateFrom        = $('#date-from').val(),
+        dateTo          = $('#date-to').val(),
+        priceFrom       = $('#price-from').val(),
+        priceTo         = $('#price-to').val();
+        
+    if (orderRef != "")
+        searchUrlSuffix += 'idEncomenda=' + orderRef + "&";
+    if (status != "")
+        searchUrlSuffix += 'estado=' + status + "&";
+    if (itemsCountFrom != "")
+        searchUrlSuffix += 'numItemsMinimo=' + itemsCountFrom + "&";
+    if (itemsCountTo != "")
+        searchUrlSuffix += 'numItemsMaximo=' + itemsCountTo + "&";
+    if (progressFrom != "")
+        searchUrlSuffix += 'percentagemConclusaoMinima=' + progressFrom + "&";
+    if (progressTo != "")
+        searchUrlSuffix += 'percentagemConclusaoMaxima=' + progressTo + "&";
+    if (dateFrom != "")
+        searchUrlSuffix += 'dataMinima=' + dateFrom + " 00:00:00&";
+    if (dateTo != "")
+        searchUrlSuffix += 'dataMaxima=' + dateTo + "  00:00:00&";
+    if (priceFrom != "")
+        searchUrlSuffix += 'precoMinimo=' + priceFrom + "&";
+    if (priceTo != "")
+        searchUrlSuffix += 'precoMaximo=' + priceTo + "&";
+
+    setTimeout(function(){
+        alert(searchUrlSuffix.slice(0, -1));
+    }, 1000);
+
+    $.getJSON('service/encomendas.php' + searchUrlSuffix.slice(0, -1), function(data){
+        //alert(data);
+    });
+}
+
 ! function () {
     var a;
     window.Lungo = a = {};
@@ -1415,6 +1459,7 @@ var draggingOtherElement = false;
                         return a.Element.Cache.section.style("" + p + "animation", f)
                     } else {
                         a.Element.Cache.section.removeClass("aside").removeClass("aside-right");
+                        onCloseEvent(); //CHANGED
                         return a.Element.Cache.section.data("aside-" + g, "hide")
                     }
                 } else {
@@ -1474,7 +1519,7 @@ var draggingOtherElement = false;
                 d = a.dom("aside#" + e.data("aside"));
                 f.swiping(function (a) {
                     var b, e;
-                    a.originalEvent.preventDefault();
+                    a.preventDefault();
                     if (!(f.hasClass("aside") || f.hasClass("aside-right")) && !draggingOtherElement) {
                         b = a.iniTouch.x - a.currentTouch.x;
                         e = Math.abs(a.currentTouch.y - a.iniTouch.y);

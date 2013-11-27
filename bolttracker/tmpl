@@ -1,0 +1,76 @@
+<script id="orders" type="text/x-jquery-tmpl"> 
+<div class="order">
+    <strong>${orderId}</strong>
+    <div class="progress progress-striped">
+        <div class="progress-bar progress-bar-${progressBarType}" role="progressbar" aria-valuenow="${orderProgress}" aria-valuemin="0" aria-valuemax="100" style="width: 80%">
+        </div>
+    </div>
+    <table>
+        <tr>
+            <th>Data</th>
+            <th>Items</th>
+            <th>Total de unidades</th>
+            <th class="price-header">Preço total (s/IVA e c/IVA)</th>
+        </tr>
+        <tr>
+            <td>
+                <p>${date}</p>
+            </td>
+            <td>
+                <p>${numItems}</p>
+            </td>
+            <td>
+                <p>${numUnits}</p>
+            </td>
+            <td>
+                <p class="price-iva">/${priceIva}€</p> 
+                <p class="price">${price}€</p>
+            </td>
+        </tr>
+    </table>
+    <p class="more-dots">...</p>
+
+    <div class="order-details">
+        <table class="table-details">
+            <tr>
+                <th></th>
+                <th>Item</th>
+                <th>Quantidade</th>
+                <th>Preço unitário (c/IVA)</th>
+                <th>Preço total (s/IVA e c/IVA)</th>                            
+            </tr>
+            <tr class="item ${itemStatus}">
+                <td><div></div></td>
+                <td>
+                    <div class="item-desc">
+                        <p class="ref-label">${itemId}</p>
+                        <p class="desc-label">${itemDesc}</p>
+                        <strong class="${itemColor}-label">${itemStatus}</strong>
+                    </div>
+                </td>
+                <td>
+                    <p>${itemQuantity}</p>
+                </td>
+                <td>
+                    <p>${unitPrice}€</p>
+                </td>
+                <td>
+                    <p class="price-iva"><span class="price">${itemPrice}€</span>/${itemPriceIva}€</p>
+                </td>
+            </tr>
+    </table>
+    <table class="table-summary">
+        <tr>
+            <th><strong class="red-label">Em aberto</strong></th>
+            <th><strong class="yellow-label">Parcialmente satisfeitos</strong></th>
+            <th><strong class="green-label">Totalmente satisfeitos</strong></th>
+        </tr>
+        <tr>
+            <td><p class="total"><span class="parcell">1</span>/4</p></td>
+            <td><p class="total"><span class="parcell">1</span>/4</p></td>
+            <td><p class="total"><span class="parcell">1</span>/4</p></td>
+        </tr>
+    </table>
+</div>
+</div>
+</script> 

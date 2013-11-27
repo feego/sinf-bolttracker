@@ -35,7 +35,9 @@ $$('.order').singleTap(function() {
     var order = $(this);
 
     if (!order.hasClass('wide')) {
-        order.find('.order-details').show();
+        order.find('.order-details').show(function() {
+		
+	});
         order.height(order.find('.table-summary').offset().top - order.offset().top + 40);
     }
     else {
@@ -47,9 +49,3 @@ $$('.order').singleTap(function() {
 
     order.toggleClass('wide');
 });
-
-function loadOrders() {
-    $.getJSON('test.json', function(data){
-        alert(data);
-    });
-}
