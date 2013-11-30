@@ -3,7 +3,52 @@
    Copyright (c) 2013 Tapquo S.L. - Licensed GPLv3, Commercial */
 
 // Var used to trigger Aside animation
-var draggingOtherElement = false;
+var disableAside = false;
+var c;
+
+function onCloseEvent() {
+    var filters = { "idCliente": loggedUser.id, "hashCliente" : loggedUser.hash };
+
+    var orderRef        = $('#search-order-ref').val(),
+        status          = $('#search select option:selected').text(),
+        itemsCountFrom  = $('#item-count-from').val(),
+        itemsCountTo    = $('#item-count-to').val(),
+        progressFrom    = $('#range-from').val(),
+        progressTo      = $('#range-to').val(),
+        dateFrom        = $('#date-from').val(),
+        dateTo          = $('#date-to').val(),
+        priceFrom       = $('#price-from').val(),
+        priceTo         = $('#price-to').val();
+        
+    if (orderRef != "")
+        filters.idEncomenda = orderRef;
+    if (status != "")
+        filters.estado = status;
+    if (itemsCountFrom != "")
+        filters.numItemsMinimo = itemsCountFrom;
+    if (itemsCountTo != "")
+        filters.numItemsMaximo = itemsCountTo;
+    if (progressFrom != "")        
+        filters.percentagemConclusaoMinima = progressFrom;
+    if (progressTo != "")
+        filters.percentagemConclusaoMaxima = progressTo;
+    if (dateFrom != "")
+        filters.dataMinima = dateFrom + " 00:00:00";
+    if (dateTo != "")
+        filters.dataMaxima = dateTo + " 00:00:00";
+    if (priceFrom != "")
+        filters.precoMinimo = priceFrom;
+    if (priceTo != "")
+        filters.precoMaximo = priceTo;
+
+    setTimeout(function(){
+        c = filters;
+    }, 1000);
+
+    // $.getJSON('service/encomendas.php' + searchUrlSuffix.slice(0, -1), function(data){
+    //     //alert(data);
+    // });
+}
 
 ! function () {
     var a;
@@ -1415,6 +1460,7 @@ var draggingOtherElement = false;
                         return a.Element.Cache.section.style("" + p + "animation", f)
                     } else {
                         a.Element.Cache.section.removeClass("aside").removeClass("aside-right");
+                        onCloseEvent(); //CHANGED
                         return a.Element.Cache.section.data("aside-" + g, "hide")
                     }
                 } else {
@@ -1473,9 +1519,11 @@ var draggingOtherElement = false;
                 f = e.closest("section");
                 d = a.dom("aside#" + e.data("aside"));
                 f.swiping(function (a) {
+                    if (disableAside)
+                        return f.attr("style", "");
                     var b, e;
-                    a.originalEvent.preventDefault();
-                    if (!(f.hasClass("aside") || f.hasClass("aside-right")) && !draggingOtherElement) {
+                    a.preventDefault();
+                    if (!(f.hasClass("aside") || f.hasClass("aside-right"))) {
                         b = a.iniTouch.x - a.currentTouch.x;
                         e = Math.abs(a.currentTouch.y - a.iniTouch.y);
                         g = g ? true : b > 3 * e && b < 50;
@@ -1490,6 +1538,8 @@ var draggingOtherElement = false;
                     }
                 });
                 return f.swipe(function (a) {
+                    if (disableAside)
+                        return;
                     var c, e;
                     c = a.iniTouch.x - a.currentTouch.x;
                     if (c > 256) {

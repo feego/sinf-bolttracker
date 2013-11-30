@@ -1,220 +1,223 @@
-var App = (function(lng, undefined) {
+var preventDefaultArray = ['#splash', 'header', 'footer', 'aside'];
 
-    sectionTrigger = function(event) {
-        event.stopPropagation();
-        setTimeout(function() {
-            lng.Notification.success("Event: " + event.type, "Layout events manager", "info", 2);
-        }, 500);
-    };
+var loggedUser = {};
 
-    articleTrigger = function(event) {
-        event.stopPropagation();
-        console.error(event);
-    };
+$.fn.hasOverflow = function() {
+    var $this = $(this);
+    var $children = $this.find('*');
+    var len = $children.length;
 
-    environment = function(event) {
-        var environment = lng.Core.environment();
-        var el = lng.dom("section > article#environment");
-
-        if (environment.os) {
-            el.find("#os > strong").html(environment.os.name);
-            el.find("#os > small").html(environment.os.version);
-        }
-        el.find("#resolution > strong").html(environment.screen.height + "p x " + environment.screen.width + "p");
-        el.find("#navigator > strong").html(environment.browser);
-        el.find("#navigator > small").html("Mobile: " + environment.isMobile);
-    };
-
-    return {
-        sectionTrigger: sectionTrigger,
-        articleTrigger: articleTrigger,
-        environment: environment
-    };
-
-})(Lungo);
-
-App.carousel = {prev: null, next: null};
-
-Lungo.Events.init({
-    'load section#layoutevents'     : App.sectionTrigger,
-
-    'unload section#layoutevents'   : App.sectionTrigger,
-
-    'load article#environment'      : App.environment,
-
-    'load article#touchevents'      : function(event) {
-
-        ["singleTap", "doubleTap", "hold",
-        "swipe", "-swiping", "swipeLeft", "swipeRight", "swipeUp", "swipeDown",
-        "rotate", "rotateLeft", "rotateRight",
-        "pinch", "pinchIn", "pinchOut",
-        "drag", "dragLeft", "dragRight", "dragUp", "dragDown"].forEach(function(type) {
-            $$("article#touchevents #gestures").on(type, function(event) {
-                $$(this).siblings('.console.output').append(' | ' + type);
-            });
+    if (len) {
+        var maxWidth = 0;
+        var maxHeight = 0
+        $children.map(function(){
+            maxWidth = Math.max(maxWidth, $(this).outerWidth(true));
+            maxHeight = Math.max(maxHeight, $(this).outerHeight(true));
         });
 
-        $$("[data-action=clean_console]").tap(function(event) {
-            $$('.console.output').html("");
-        });
-
-        $$("[data-action=twitter]").tap(function(event) {
-            window.open("https://twitter.com/intent/tweet?original_referer=http%3A%2F%2Flungo.tapquo.com%2F&amp;text=@lungojs%20a%20framework%20for%20developers%20who%20want%20to%20design,%20build%20and%20share%20cross%20device%20apps", "_blank");
-        });
-
-    },
-
-
-    'load section#carousel': function(event) {
-        App.carousel = Lungo.Element.Carousel($$('[data-control=carousel]')[0], function(index, element) {
-            Lungo.dom("section#carousel .title span").html(index + 1);
-        });
-    },
-
-    'tap section#carousel > header [data-direction=left]':  App.carousel.prev,
-
-    'tap section#carousel > header [data-direction=right]': App.carousel.next,
-
-    'load section#pull': function(event) {
-        App.pull = new Lungo.Element.Pull('section#pull article', {
-            onPull: "Pull down to refresh",
-            onRelease: "Release to get new data",
-            onRefresh: "Refreshing...",
-            callback: function() {
-                alert("Pull & Refresh completed!");
-                App.pull.hide();
-            }
-        });
-    },
-
-
-    'touch article#notification a[data-action=normal]': function() {
-        Lungo.Notification.show('user', 'Title', 2);
-    },
-
-    'touch article#notification a[data-action=loading]': function() {
-        Lungo.Notification.show();
-        setTimeout(Lungo.Notification.hide, 3000);
-    },
-
-    'touch article#notification a[data-action=success]': function() {
-        Lungo.Notification.success('Title', 'Description', 'ok', 2);
-    },
-
-    'touch article#notification a[data-action=error]': function() {
-        Lungo.Notification.error('Title', 'Description', 'remove', 2);
-    },
-
-    'touch article#notification a[data-action=confirm]': function() {
-        Lungo.Notification.confirm({
-            icon: 'user',
-            title: 'Lorem ipsum dolor sit amet, consectetur adipisicing.',
-            description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nemo amet nulla dolorum hic eum debitis dolorem expedita? Commodi molestiae tempora totam explicabo sed deserunt cum iusto eos perspiciatis ea in.',
-            accept: {
-                icon: 'checkmark',
-                label: 'Accept',
-                callback: function(){ alert("Yes!"); }
-            },
-            cancel: {
-                icon: 'close',
-                label: 'Cancel',
-                callback: function(){ alert("No!"); }
-            }
-        });
-    },
-
-    'touch article#notification a[data-action=html]': function() {
-        Lungo.Notification.html('<h1>Hello World</h1>', "Close");
-    },
-
-    'touch article#notification a[data-action=chaining]': function() {
-        Lungo.Notification.show('user', 'user', 2, function() {
-            Lungo.Notification.error('Title 2', 'Description 2', 'remove',  2, function() {
-                Lungo.Notification.show('cog', 'cog', 2, function() {
-                    Lungo.Notification.html('<h1>Hello World</h1>', "Close");
-                });
-            });
-        });
+        return maxWidth > $this.width() || maxHeight > $this.height();
     }
 
-});
+    return false;
+};
 
-Lungo.ready(function() {
-
-// Lungo.Aside.show();
-// Lungo.Router.section("notification");
-
-// Lungo.Notification.show();
-// Lungo.Notification.show("home", "Please wait...");
-// Lungo.Notification.show("magic");
-
-// Lungo.Notification.show("Please wait", "user", 2, function(){ alert(1); });
-
-// Lungo.Notification.error('Lorem ipsum dolor sit amet', "    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis veritatis similique sed qui doloribus inventore doloremque temporibus ab totam...", 'remove');
-// Lungo.Notification.success('Lorem ipsum dolor sit amet', "    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis veritatis similique sed qui doloribus inventore doloremque temporibus ab totam...", 'ok');
-// Lungo.Notification.confirm({
-//     icon: 'user',
-//     title: 'Lorem ipsum dolor sit amet, consectetur adipisicing.',
-//     description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nemo amet nulla dolorum hic eum debitis dolorem expedita? Commodi molestiae tempora totam explicabo sed deserunt cum iusto eos perspiciatis ea in.',
-//     accept: {
-//         icon: 'checkmark',
-//         label: 'Accept',
-//         callback: function(){ alert("Yes!"); }
-//     },
-//     cancel: {
-//         icon: 'close',
-//         label: 'Cancel',
-//         callback: function(){ alert("No!"); }
-//     }
-// });
-// Lungo.Notification.html("<h1 class='title'>Title</h1><article>aslkdkals</article><a href='#' class='button large anchor' >Seleccionar</a>", "Cancelar");
-// Lungo.Notification.push("Lorem ipsum dolor sit amet", "home");
-
-});
-
-
-
-// App
-
-var draggedInitPosition = {};
-var draggedObject = $$('.draggable'); 
-
-draggedObject.on('touchend', function() {
-    draggingOtherElement = false;
-    draggedObject = $$('.draggable');
-});
-
-draggedObject.on('touchstart', function(event) {
-    event.preventDefault();
-    Lungo.Aside.hide();
-
-    var selector = "." + $$(event.currentTarget).attr('class').replace(/^\s+|\s+$/g, '').replace(/\s/gi, ".");
-    draggedObject = $$(selector);
-    draggedInitPosition = {
-        x : draggedObject.offset().left,
-        y : draggedObject.offset().top
-    };
-    draggingOtherElement = true;
-});
-
-window.addEventListener('touchmove',function(e){
-    e.preventDefault();
-});
-
-
-function render(event) {
-    draggedObject[0].style.left = (
-        event.currentTouch.x -
-        event.iniTouch.x +
-        draggedInitPosition.x) + "px";
-    draggedObject[0].style.top = (
-        event.currentTouch.y -
-        event.iniTouch.y +
-        draggedInitPosition.y) + "px";
-    draw();
-    requestAnimationFrame(render);
+for (val in preventDefaultArray) {
+    $(preventDefaultArray[val]).bind('touchmove', function(e){
+        e.preventDefault();
+    });
 }
 
-draggedObject.swiping(function(event) {
-    render(event);
+
+$('#main-article').bind('touchmove', function(e){
+    Lungo.Aside.hide();
 });
+
+$$('.order').singleTap(function() {
+    var order = $(this);
+
+    if (!order.hasClass('wide')) {
+        order.find('.order-details').show();
+        order.height(order.find('.table-summary').offset().top - order.offset().top + 40);
+    }
+    else {
+        order.height(95);
+        setTimeout( function() {
+            order.find('.order-details').hide();
+        }, 300);
+    }
+
+    order.toggleClass('wide');
+});
+
+function loadOrders() {
+    $.getJSON('test.json', function(data){
+        alert(data);
+    });
+}
+
+$('#login-button').click(function() {
+    var username = $('#txt-signup-name').val(),
+    userhash = String(CryptoJS.SHA512(username + $('#txt-signup-password').val()));
+    var url = '/bolttracker/service/clientes.php?id=' + username + "&hash=" + userhash;
+
+    $.ajax({
+        url: url,
+        type: 'GET',
+        dataType: 'json',
+        success: function(data){
+            var dataObj = jQuery.parseJSON(data);
+            window.Lungo.Router.section("main");
+
+            $('#main > header > p').text(dataObj.Nome);
+            loggedUser = { id: username, hash: userhash };
+            $('#search-button').show();
+            disableAside = false;
+
+            var filters = { "idCliente": loggedUser.id, "hashCliente" : loggedUser.hash };
+            loadClientOrders(filters);
+        }
+    });
+});
+
+$('#track-button').click(function() {
+    var filtersArray = { "idEncomenda": $('#txt-order-id').val() };
+
+    $.ajax({
+        url: '/bolttracker/service/encomendas.php',
+        type: 'POST',
+        dataType: 'json',
+        data: ({ filters: filtersArray }),
+        success: function(data){
+            var dataObj = jQuery.parseJSON(data);
+            window.Lungo.Router.section("main");
+
+            $('#main > header > p').text("");
+            loggedUser = { id: "", hash: "" };
+            $('#search-button').hide();
+            disableAside = true;
+            
+            $('#main-article').empty();
+            $('#main-article').append(getOrderHtml(dataObj[0]));
+        }
+    });
+});
+
+function loadClientOrders(filtersArray) {
+    $.ajax({
+        url: '/bolttracker/service/encomendas.php',
+        type: 'POST',
+        dataType: 'json',
+        data: ({ filters: filtersArray }),
+        success: function(data){
+            var dataObj = jQuery.parseJSON(data);
+
+            $('#main-article').empty();
+
+            for (var order in dataObj) {
+                $('#main-article').append(getOrderHtml(dataObj[order]));
+            }
+        }
+    });
+}
+
+function getOrderTotalUnits(orderData) {
+    var counter = 0;
+    for (var item in orderData.Itens) {
+        counter += orderData.Itens[item].QuantidadeEncomendada;
+    }
+    return counter;
+}
+
+function getItemColor(status) {
+    if (status == "Satisfeito")
+        return "green";
+    else if (status == "Parcialmente Satisfeito")
+        return "yellow";
+    else 
+        return "red";
+}
+
+function getItemClass(status) {
+    if (status == "Satisfeito")
+        return "liquid";
+    else if (status == "Parcialmente Satisfeito")
+        return "exped";
+    else 
+        return "regist";
+}
+
+function getOrderProgressColor(status) {
+    if (status == "Em progresso")
+        return "warning";
+    else if (status == "Satisfeita")
+        return "success";
+    else 
+        return "danger";
+}
+
+function getProgressTitleColor(status) {
+    if (status == "Em progresso")
+        return "#f0ad4e";
+    else if (status == "Satisfeita")
+        return "#5cb85c";
+    else 
+        return "#d9534f";
+}
+
+function getOrderHtml(orderData) {
+    var emAbertoNumerador = 0, parcSatisfNumerador = 0, satisfNumerador = 0, denominador = 0;
+
+    var html = '<div class="order">';
+
+    html += '<strong>' + orderData.Serie + "/" + orderData.NumDoc + '</strong>';
+    html += '<div class="progress progress-striped">';
+    html += '<div class="progress-bar progress-bar-' + getOrderProgressColor(orderData.Estado) + '" role="progressbar" aria-valuenow="10" aria-valuemin="10" aria-valuemax="100" style="width: ' + orderData.PercentagemConclusao + '%"></div></div>';
+    html += '<div class="progress-title" style="color: ' + getProgressTitleColor(orderData.Estado) + ';">' + orderData.Estado + '</div>';
+    html += '<table><tr><th>Data</th><th>Items</th><th>Total de unidades</th><th class="price-header">Preço total (s/IVA e c/IVA)</th></tr>';
+    html += '<tr><td><p>' + orderData.Data.split(" ")[0] + '</p></td>';
+    html += '<td><p>' + orderData.NumeroItens + '</p></td>';
+    html += '<td><p>' + getOrderTotalUnits(orderData) + '</p></td>';
+    html += '<td><p class="price-iva">/' + orderData.PrecoTotalComIva + '€</p><p class="price">' + orderData.PrecoTotalSemIva + '€</p></td></tr>';
+    html += '</table><p class="more-dots">...</p>';
+
+    html += '<div class="order-details"><table class="table-details">';
+    html += '<tr><th></th><th>Item</th><th>Peso unitário</th><th>Quantidade satisfeita</th><th>Preço unitário (s/IVA)</th><th>Preço total (s/IVA e c/IVA)</th></tr>';
+    
+
+    for (var item in orderData.Itens) {
+        html += '<tr class="item ' + getItemClass(orderData.Itens[item].Estado) + '">';
+        html += '<td><div></div></td><td><div class="item-desc">';
+        html += '<p class="ref-label">' + orderData.Itens[item].IdArtigo + '</p>';
+        html += '<p class="desc-label">' + orderData.Itens[item].Descricao + '</p>';
+        html += '<strong class="' + getItemColor(orderData.Itens[item].Estado) + '-label">' + orderData.Itens[item].Estado + '</strong>';
+        orderData.Itens[item].PesoUnitario = 3;
+        html += '</div></td><td style="padding-bottom:15px;"><p>' + ((orderData.Itens[item].PesoUnitario == 0) ? "-" : orderData.Itens[item].PesoUnitario + ' Kg') + '</p></td>';
+        html += '<td style="padding-bottom:8px;"><p class="price-iva"><span class="price">' + orderData.Itens[item].QuantidadeSatisfeita + '</span>/' + orderData.Itens[item].QuantidadeEncomendada + '</p></td>';
+        html += '<td style="padding-bottom:15px;"><p>' + orderData.Itens[item].PrecoUnitarioSemIva + ' €</p></td>';
+        html += '<td><p class="price-iva"><span class="price">' + orderData.Itens[item].PrecoTotalSemIva + ' €</span>/' + orderData.Itens[item].PrecoTotalComIva + ' €</p>';
+    
+        denominador++;
+        switch (orderData.Itens[item].Estado) {
+            case "Satisfeito":
+                satisfNumerador++;
+                break;
+            case "Parcialmente Satisfeito":
+                parcSatisfNumerador++;
+                break;
+            default:
+                emAbertoNumerador++;
+                break;
+        }
+    }
+
+
+
+    html += '</td></tr></table><table class="table-summary"><tr>';
+    html += '<th><strong class="red-label">Em aberto</strong></th><th><strong class="yellow-label">Parcialmente satisfeitos</strong></th><th><strong class="green-label">Totalmente satisfeitos</strong></th>';
+    html += '</tr><tr><td><p class="total"><span class="parcell">' + emAbertoNumerador + '</span>/' + denominador + '</p></td>';
+    html += '<td><p class="total"><span class="parcell">' + parcSatisfNumerador + '</span>/' + denominador + '</p></td>';
+    html += '<td><p class="total"><span class="parcell">' + satisfNumerador + '</span>/' + denominador + '</p></td></tr></table></div></div>';
+
+    return html;
+
+}

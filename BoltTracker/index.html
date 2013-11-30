@@ -2,9 +2,10 @@
 <html>
 
 <!-- Mirrored from lungo.tapquo.com/demo/ by HTTrack Website Copier/3.x [XR&CO'2013], Thu, 24 Oct 2013 00:42:42 GMT -->
+
 <head>
     <meta charset="utf-8">
-    <title>Lungo</title>
+    <title>BoltTracker</title>
     <meta name="description" content="">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -54,49 +55,101 @@
 </head>
 
 <body>
-    <section id="splash" data-transition="slide">
-        <article class="active splash">
-            <h1>BoltTracker</h1>
-            <h2>Tracking at the speed of light</h2>
-            <h3>Choose your way of tracking :</h3>
-            <div id="login">
-                <div class="form">
-                    <fieldset class="radius-top" data-icon="user">
-                        <input type="text" placeholder="Your username" id="txt-signup-name" value="">
-                    </fieldset>
-                    <fieldset class="radius-bottom shadow" data-icon="lock">
-                        <input type="password" placeholder="Your password" id="txt-signup-password" value="">
-                    </fieldset>
-                    <br/>
-                    <button class="anchor" data-view-section="main" data-icon="lock" data-icon="user" data-label="Log in"></button>
+    <aside id="right" data-transition="right">
+        <header data-title="Procurar por:"></header>
+        <article class="list active">
+            <div id="search" class="form">
+                <input type="text" placeholder="Referência da encomenda" id="search-order-ref" value="" class="text">
+                <p>Estado:</p>
+                <label class="select border">
+                    <select>
+                        <option value="" style="display:none;"></option>
+                        <option value="1">Aberta</option>
+                        <option value="2">Em Progresso</option>
+                        <option value="3">Satisfeita</option>
+                        <option value="4">Anulada</option>
+                    </select>
+                </label>
+                <p>Número de items</p>
+                <div class="inline input">
+                    <span>Desde:</span> 
+                    <input type="text" id="item-count-from" value="" class="text">
+                    <span>Até:</span>
+                    <input type="text" id="item-count-to" value="" class="text">
                 </div>
-                <div class="form tracknumber">
-                    <fieldset class="radius-top" data-icon="user">
-                        <input type="text" placeholder="Order tracking number" id="txt-signup-name" value="">
-                    </fieldset>
-                    <br/>
-                    <button class="anchor" data-view-section="main" data-icon="lock" data-icon="user" data-label="Follow order"></button>
+                <p>Progresso mínimo:</p>
+                <input type="range" id="range-from" min="0" max="100" class="range" value="0">
+                <p>Progresso máximo:</p>
+                <input type="range" id="range-to" min="0" max="100" class="range" value="100">
+                <p>Data:</p>
+                <div class="inline input">
+                    <span>Desde:</span> 
+                    <input type="date" id="date-from" class="align_right date" value="">
+                </div>
+                <div class="inline input">
+                    <span>Até:</span> 
+                    <input type="date" id="date-to" class="align_right date" value="" style="margin-left: 26px;">
+                </div>
+                <p>Preço da encomenda:</p>
+                <div class="inline input">
+                    <span>Desde:</span> 
+                    <input type="text" placeholder="€" id="price-from" value="" class="text">
+                    <span>Até:</span>
+                    <input type="text" placeholder="€" id="price-to" value="" class="text">
+                </div>
+                <div id="search-info" style="padding: 10px; margin-top: 50px;">
+                    <span>
+                        Preencha pelo menos um dos campos seguintes e volte a deslizar o dedo pelo ecrã para fazer a sua pesquisa.
+                    </span>
                 </div>
             </div>
-            <p>© 2013/2014 4MIEIC01G03</p>
+        </article>
+    </aside>
+    <section id="splash" data-transition="slide">
+        <article class="active splash">
+            <div id="welcome" style="height: 100%;">
+                <h1>BoltTracker</h1>
+                <h2>Tracking at the speed of light</h2>
+                <h3>Choose your way of tracking :</h3>
+                <div id="login">
+                    <div class="form">
+                        <fieldset class="radius-top" data-icon="user">
+                            <input type="text" placeholder="Your username" id="txt-signup-name" value="">
+                        </fieldset>
+                        <fieldset class="radius-bottom shadow" data-icon="lock">
+                            <input type="password" placeholder="Your password" id="txt-signup-password" value="">
+                        </fieldset>
+                        <br/>
+                        <button id="login-button" class="anchor" data-icon="lock" data-icon="user" data-label="Log in"></button>
+                    </div>
+                    <div class="form tracknumber">
+                        <fieldset class="radius-top" data-icon="user">
+                            <input type="text" placeholder="Order tracking number" id="txt-order-id" value="">
+                        </fieldset>
+                        <br/>
+                        <button id="track-button" class="anchor" data-icon="lock" data-icon="user" data-label="Follow order"></button>
+                    </div>
+                </div>
+                <p>© 2013/2014 4MIEIC01G03</p>
+            </div>
         </article>
     </section>
     <section id="main" data-transition="slide" data-aside="right" class="drag">
         <header>
             <nav>
-                <a href="#" data-view-aside="right" data-icon="search" class="on-right"></a>
+                <a href="#" data-view-aside="right" data-icon="search" class="on-right" id="search-button"></a>
             </nav>
             <img class="title centered" src="static/images/logo_primavera.png" height="27" width="175" border="0">
             <nav class="on-left">
                 <a href="#" data-icon="chevron-left" data-view-section="splash" class="on-right"></a>
             </nav>
-            <p>Joaquim Simões</p>
+            <p></p>
         </header>
         <article id="main-article" class="list indenteds scroll">
-            <!-- TODO Lista de Encomendas -->
+            <!-- Order list -->
         </article>
         <footer>
-            <p>© 2013/2014 4MIEIC01G03</p> 
+            <p>© 2013/2014 4MIEIC01G03</p>
         </footer>
     </section>
     <!-- Lungo dependencies -->
@@ -104,12 +157,11 @@
     <script src="components/lungo/lungo.js"></script>
     <!-- LungoJS - Sandbox App -->
     <script>
-
-    Lungo.init({
-        resources: ['static/asides/right.html'],
-        history: false
-    });
+        Lungo.init({});
     </script>
+    <script src="https://code.jquery.com/jquery-2.0.3.min.js"></script>
+    <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/sha512.js"></script>
     <script src="static/javascripts/app.js"></script>
 </body>
+
 </html>
