@@ -1079,7 +1079,7 @@ form input[type=checkbox]:checked:after,
 }
 /* =================================  PULL  =============================== */
 body > section > [data-control="pull"] {
-  background-color: #c4c4c4;
+  background-color: #e7e7e7;
   color: #747474;
   -webkit-text-shadow: 0 0.1em 1em #e7e7e7;
   -moz-text-shadow: 0 0.1em 1em #e7e7e7;

@@ -1,10 +1,29 @@
-/* lungo v2.2.0 - 2013/7/11
-   http://lungo.tapquo.com
-   Copyright (c) 2013 Tapquo S.L. - Licensed GPLv3, Commercial */
 
-// Var used to trigger Aside animation
 var disableAside = false;
-var c;
+
+var prevOrderRef, 
+    prevStatus, 
+    prevItemsCountFrom, 
+    prevItemsCountTo, 
+    prevProgressFrom, 
+    prevProgressTo, 
+    prevDateFrom, 
+    prevDateTo,
+    prevPriceFrom,
+    prevPriceTo;    
+
+function onOpenEvent() {
+    prevOrderRef        = $('#search-order-ref').val();
+    prevStatus          = $('#search select option:selected').text();
+    prevItemsCountFrom  = $('#item-count-from').val();
+    prevItemsCountTo    = $('#item-count-to').val();
+    prevProgressFrom    = $('#range-from').val();
+    prevProgressTo      = $('#range-to').val();
+    prevDateFrom        = $('#date-from').val();
+    prevDateTo          = $('#date-to').val();
+    prevPriceFrom       = $('#price-from').val();
+    prevPriceTo         = $('#price-to').val();
+}
 
 function onCloseEvent() {
     var filters = { "idCliente": loggedUser.id, "hashCliente" : loggedUser.hash };
@@ -19,15 +38,42 @@ function onCloseEvent() {
         dateTo          = $('#date-to').val(),
         priceFrom       = $('#price-from').val(),
         priceTo         = $('#price-to').val();
+
+    if (prevOrderRef == orderRef && 
+        prevStatus == status &&
+        prevItemsCountFrom == itemsCountFrom &&
+        prevItemsCountTo == itemsCountTo &&
+        prevProgressFrom == progressFrom &&
+        prevProgressTo == progressTo &&
+        prevDateFrom == dateFrom &&
+        prevDateTo == dateTo &&
+        prevPriceFrom == priceFrom &&
+        prevPriceTo == priceTo)
+        return;
+
+    $('#main-article').empty();
+
+    if (parseInt(progressFrom) > parseInt(progressTo)) {
+        progressFrom = "";
+        progressTo = "";
+    }
+    if (parseInt(itemsCountFrom) > parseInt(itemsCountTo)) {
+        itemsCountFrom = "";
+        itemsCountTo = "";
+    }
+    if (parseInt(priceFrom) > parseInt(priceTo)) {
+        priceFrom = "";
+        priceTo = "";
+    }
         
     if (orderRef != "")
         filters.idEncomenda = orderRef;
     if (status != "")
         filters.estado = status;
     if (itemsCountFrom != "")
-        filters.numItemsMinimo = itemsCountFrom;
+        filters.numItensMinimo = itemsCountFrom;
     if (itemsCountTo != "")
-        filters.numItemsMaximo = itemsCountTo;
+        filters.numItensMaximo = itemsCountTo;
     if (progressFrom != "")        
         filters.percentagemConclusaoMinima = progressFrom;
     if (progressTo != "")
@@ -41,13 +87,7 @@ function onCloseEvent() {
     if (priceTo != "")
         filters.precoMaximo = priceTo;
 
-    setTimeout(function(){
-        c = filters;
-    }, 1000);
-
-    // $.getJSON('service/encomendas.php' + searchUrlSuffix.slice(0, -1), function(data){
-    //     //alert(data);
-    // });
+    loadClientOrders(filters);
 }
 
 ! function () {
@@ -381,7 +421,7 @@ function onCloseEvent() {
         b = function () {
             var b, c;
             b = a.Core.environment();
-            c = b.isMobile && b.os.name === "Android" && b.os.version < "3" ? "absolute" : "fixed";
+            c = b.isMobile && b.os.name === "Android" && b.os.version < "3" ? "absolute" : "absolute";
             return a.dom(document.body).data("position", c)
         };
         return {
@@ -1414,6 +1454,8 @@ function onCloseEvent() {
                         a.Element.Cache.aside = h;
                         if (a.DEVICE === c.DEVICE.PHONE) {
                             h.addClass(c.CLASS.SHOW);
+
+                            onOpenEvent();
                             if (f !== -1) {
                                 g = n(f) + " " + b;
                                 return a.Element.Cache.section.style("" + p + "animation", g)
@@ -2175,7 +2217,7 @@ function onCloseEvent() {
             j = true;
             h[0].addEventListener("touchmove", m, true);
             u(d.onRefresh);
-            s(true);
+            //s(true);
             q(k, true);
             if (d.callback) {
                 return d.callback.apply(this)

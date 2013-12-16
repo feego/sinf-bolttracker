@@ -15,7 +15,7 @@
     <meta http-equiv="cleartype" content="on">
 
     <!-- iPhone -->
-    <link href="../../cdn.tapquo.com/lungo/icon-57.png" sizes="57x57" rel="apple-touch-icon">
+    <link href="../../cdn.tapquo.com/linkungo/icon-57.png" sizes="57x57" rel="apple-touch-icon">
     <link href="../../cdn.tapquo.com/lungo/startup-image-320x460.png" media="(device-width: 320px) and (device-height: 480px)
     and (-webkit-device-pixel-ratio: 1)" rel="apple-touch-startup-image">
 
@@ -29,8 +29,8 @@
     and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image">
 
     <!-- iPad -->
-    <link href="../../cdn.tapquo.com/lungo/icon-72.png" sizes="72x72" rel="apple-touch-icon">
-    <link href="../../cdn.tapquo.com/lungo/startup-image-768x1004.png" media="(device-width: 768px) and (device-height: 1024px)
+    <link href="icon-72.png" sizes="72x72" rel="apple-touch-icon">
+    <link href="startup-image-768x1004.png" media="(device-width: 768px) and (device-height: 1024px)
     and (orientation: portrait)
     and (-webkit-device-pixel-ratio: 1)" rel="apple-touch-startup-image">
     <link href="../../cdn.tapquo.com/lungo/startup-image-748x1024.png" media="(device-width: 768px) and (device-height: 1024px)
@@ -56,14 +56,16 @@
 
 <body>
     <aside id="right" data-transition="right">
-        <header data-title="Procurar por:"></header>
+        <header data-title="Procurar por:">
+            <a class="icon edit"></a>
+        </header>
         <article class="list active">
             <div id="search" class="form">
                 <input type="text" placeholder="Referência da encomenda" id="search-order-ref" value="" class="text">
                 <p>Estado:</p>
                 <label class="select border">
                     <select>
-                        <option value="" style="display:none;"></option>
+                        <option value=""></option>
                         <option value="1">Aberta</option>
                         <option value="2">Em Progresso</option>
                         <option value="3">Satisfeita</option>
@@ -107,7 +109,7 @@
     </aside>
     <section id="splash" data-transition="slide">
         <article class="active splash">
-            <div id="welcome" style="height: 100%;">
+            <div id="welcome">
                 <h1>BoltTracker</h1>
                 <h2>Tracking at the speed of light</h2>
                 <h3>Choose your way of tracking :</h3>
@@ -134,7 +136,7 @@
             </div>
         </article>
     </section>
-    <section id="main" data-transition="slide" data-aside="right" class="drag">
+    <section id="main" data-transition="slide" data-pull="normal" data-aside="right" class="drag">
         <header>
             <nav>
                 <a href="#" data-view-aside="right" data-icon="search" class="on-right" id="search-button"></a>
@@ -157,7 +159,7 @@
     <script src="components/lungo/lungo.js"></script>
     <!-- LungoJS - Sandbox App -->
     <script>
-        Lungo.init({});
+    Lungo.init({});
     </script>
     <script src="https://code.jquery.com/jquery-2.0.3.min.js"></script>
     <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/sha512.js"></script>

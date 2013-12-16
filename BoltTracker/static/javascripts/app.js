@@ -1,40 +1,26 @@
-var preventDefaultArray = ['#splash', 'header', 'footer', 'aside'];
+
+// DISABLE OVERSCROLL
+
+// var preventDefaultArray = ['#splash', 'header', 'footer', 'aside'];
+// for (val in preventDefaultArray) {
+//     $(preventDefaultArray[val]).bind('touchmove', function(e){
+//         e.preventDefault();
+//     });
+// }
+
 
 var loggedUser = {};
-
-$.fn.hasOverflow = function() {
-    var $this = $(this);
-    var $children = $this.find('*');
-    var len = $children.length;
-
-    if (len) {
-        var maxWidth = 0;
-        var maxHeight = 0
-        $children.map(function(){
-            maxWidth = Math.max(maxWidth, $(this).outerWidth(true));
-            maxHeight = Math.max(maxHeight, $(this).outerHeight(true));
-        });
-
-        return maxWidth > $this.width() || maxHeight > $this.height();
-    }
-
-    return false;
-};
-
-for (val in preventDefaultArray) {
-    $(preventDefaultArray[val]).bind('touchmove', function(e){
-        e.preventDefault();
-    });
-}
-
+var currentFilters = [];
 
 $('#main-article').bind('touchmove', function(e){
     Lungo.Aside.hide();
 });
 
 $$('.order').singleTap(function() {
-    var order = $(this);
+    toggleWideOrder($(this));
+});
 
+function toggleWideOrder(order) {
     if (!order.hasClass('wide')) {
         order.find('.order-details').show();
         order.height(order.find('.table-summary').offset().top - order.offset().top + 40);
@@ -47,7 +33,7 @@ $$('.order').singleTap(function() {
     }
 
     order.toggleClass('wide');
-});
+}
 
 function loadOrders() {
     $.getJSON('test.json', function(data){
@@ -55,9 +41,31 @@ function loadOrders() {
     });
 }
 
+function clearSearch() {
+    $('#search-order-ref').val("");
+    $('#search select option:selected').text(""),
+    $('#item-count-from').val(""),
+    $('#item-count-to').val(""),
+    $('#range-from').val("0"),
+    $('#range-to').val("100"),
+    $('#date-from').val(""),
+    $('#date-to').val(""),
+    $('#price-from').val(""),
+    $('#price-to').val("");
+}
+
+$('.icon.edit').click(function() {
+    clearSearch();
+});
+
 $('#login-button').click(function() {
     var username = $('#txt-signup-name').val(),
     userhash = String(CryptoJS.SHA512(username + $('#txt-signup-password').val()));
+    if (username == "") {
+        alert("Please fill the login fields and try again!");
+        return;
+    }
+
     var url = '/bolttracker/service/clientes.php?id=' + username + "&hash=" + userhash;
 
     $.ajax({
@@ -65,6 +73,11 @@ $('#login-button').click(function() {
         type: 'GET',
         dataType: 'json',
         success: function(data){
+            if (!data) {
+                alert("It was not possible to log in. Please try again!");
+                return;
+            }
+
             var dataObj = jQuery.parseJSON(data);
             window.Lungo.Router.section("main");
 
@@ -80,7 +93,13 @@ $('#login-button').click(function() {
 });
 
 $('#track-button').click(function() {
-    var filtersArray = { "idEncomenda": $('#txt-order-id').val() };
+    var orderId = $('#txt-order-id').val();
+    if (orderId == "") {
+        alert("Please fill the Order tracking number field and try again!");
+        return;
+    }
+
+    var filtersArray = { "idEncomenda": orderId };
 
     $.ajax({
         url: '/bolttracker/service/encomendas.php',
@@ -88,6 +107,11 @@ $('#track-button').click(function() {
         dataType: 'json',
         data: ({ filters: filtersArray }),
         success: function(data){
+            if (!data) {
+                alert("An error ocurred tracking the order. Please try again!");
+                return;
+            }
+
             var dataObj = jQuery.parseJSON(data);
             window.Lungo.Router.section("main");
 
@@ -98,17 +122,25 @@ $('#track-button').click(function() {
             
             $('#main-article').empty();
             $('#main-article').append(getOrderHtml(dataObj[0]));
+            toggleWideOrder($('.order'));
         }
     });
 });
 
 function loadClientOrders(filtersArray) {
+    currentFilters = filtersArray;
+
     $.ajax({
         url: '/bolttracker/service/encomendas.php',
         type: 'POST',
         dataType: 'json',
         data: ({ filters: filtersArray }),
         success: function(data){
+            if (!data) {
+                alert("An error ocurred loading the orders!");
+                return;
+            }
+
             var dataObj = jQuery.parseJSON(data);
 
             $('#main-article').empty();
@@ -119,6 +151,16 @@ function loadClientOrders(filtersArray) {
         }
     });
 }
+
+var pull_refresh = new Lungo.Element.Pull('#main-article', {
+    onPull: "Pull down to refresh",      //Text on pulling
+    onRelease: "Release to refresh",//Text on releasing
+    onRefresh: "Loading...",          //Text on refreshing
+    callback: function() {               //Action on refresh
+        loadClientOrders(currentFilters);
+        pull_refresh.hide();
+    }
+});
 
 function getOrderTotalUnits(orderData) {
     var counter = 0;
@@ -147,7 +189,7 @@ function getItemClass(status) {
 }
 
 function getOrderProgressColor(status) {
-    if (status == "Em progresso")
+    if (status == "Em Progresso")
         return "warning";
     else if (status == "Satisfeita")
         return "success";
@@ -156,12 +198,12 @@ function getOrderProgressColor(status) {
 }
 
 function getProgressTitleColor(status) {
-    if (status == "Em progresso")
-        return "#f0ad4e";
+    if (status == "Em Progresso")
+        return "#CC7A06;";
     else if (status == "Satisfeita")
-        return "#5cb85c";
+        return "#135813";
     else 
-        return "#d9534f";
+        return "#A73A37; text-shadow: 0 0 10px #cdcdcd";
 }
 
 function getOrderHtml(orderData) {
@@ -190,7 +232,6 @@ function getOrderHtml(orderData) {
         html += '<p class="ref-label">' + orderData.Itens[item].IdArtigo + '</p>';
         html += '<p class="desc-label">' + orderData.Itens[item].Descricao + '</p>';
         html += '<strong class="' + getItemColor(orderData.Itens[item].Estado) + '-label">' + orderData.Itens[item].Estado + '</strong>';
-        orderData.Itens[item].PesoUnitario = 3;
         html += '</div></td><td style="padding-bottom:15px;"><p>' + ((orderData.Itens[item].PesoUnitario == 0) ? "-" : orderData.Itens[item].PesoUnitario + ' Kg') + '</p></td>';
         html += '<td style="padding-bottom:8px;"><p class="price-iva"><span class="price">' + orderData.Itens[item].QuantidadeSatisfeita + '</span>/' + orderData.Itens[item].QuantidadeEncomendada + '</p></td>';
         html += '<td style="padding-bottom:15px;"><p>' + orderData.Itens[item].PrecoUnitarioSemIva + ' €</p></td>';
@@ -210,7 +251,15 @@ function getOrderHtml(orderData) {
         }
     }
 
-
+    if (denominador == 0) {
+        html += '<tr class="item">';
+        html += '<td><div></div></td><td><div class="item-desc">';
+        html += '<p class="ref-label">-</p>';
+        html += '</div></td><td style="padding-bottom:15px;"><p>-</p></td>';
+        html += '<td style="padding-bottom:8px;"><p class="price-iva"><span class="price">-</span>/-</p></td>';
+        html += '<td style="padding-bottom:15px;"><p>-</p></td>';
+        html += '<td><p class="price-iva"><span class="price">-</span>/-</p>';
+    }
 
     html += '</td></tr></table><table class="table-summary"><tr>';
     html += '<th><strong class="red-label">Em aberto</strong></th><th><strong class="yellow-label">Parcialmente satisfeitos</strong></th><th><strong class="green-label">Totalmente satisfeitos</strong></th>';
